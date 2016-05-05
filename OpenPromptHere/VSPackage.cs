@@ -31,17 +31,12 @@ namespace OpenPromptHere
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
+    [InstalledProductRegistration("#110", "#112", Vsix.Version, IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(VsPackage.PackageGuidString)]
+    [Guid(PackageGuids.guidOpenPromptCommandPackageString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class VsPackage : Package
     {
-        /// <summary>
-        /// OpenPromptCommandPackage GUID string.
-        /// </summary>
-        public const string PackageGuidString = "b07bb768-fef0-4c48-b3e7-16a953c0e70e";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="OpenPromptCommand"/> class.
         /// </summary>
