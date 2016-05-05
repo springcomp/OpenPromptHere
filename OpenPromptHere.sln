@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenPromptHere", "OpenPromptHere\OpenPromptHere.csproj", "{EE601E0C-881C-4C50-B812-8D653FC8CEA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F96D42BB-2478-4E87-ADAF-CA5F1D410C14}"
+	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.md = CHANGELOG.md
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE601E0C-881C-4C50-B812-8D653FC8CEA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE601E0C-881C-4C50-B812-8D653FC8CEA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE601E0C-881C-4C50-B812-8D653FC8CEA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE601E0C-881C-4C50-B812-8D653FC8CEA6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
