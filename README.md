@@ -1,10 +1,8 @@
 # Open PowerShell Prompt
 
-<!-- Replace this badge with your own-->
-[![Build status](https://ci.appveyor.com/api/projects/status/hv6uyc059rqbc6fj?svg=true)](https://ci.appveyor.com/project/madskristensen/extensibilitytools)
+[![Build status](https://ci.appveyor.com/api/projects/status/6mlj00vwkj6twfdp?svg=true)](https://ci.appveyor.com/project/springcomp/openprompthere)
 
-<!-- Update the VS Gallery link after you upload the VSIX-->
-Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/[GuidFromGallery])
+Download this extension from the [VS Gallery](https://visualstudiogallery.msdn.microsoft.com/e98f54f4-199f-4da2-9395-e43f07b0286e)
 or get the [CI build](http://vsixgallery.com/extension/OpenPromptHere.SpringComp/).
 
 ---------------------------------------
