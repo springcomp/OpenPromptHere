@@ -87,13 +87,29 @@ namespace OpenPromptHere.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
+            // retrieve currently selected project
+
             var project = SolutionExplorer.GetSelectedProject();
             var path = project?.FullName;
             if (String.IsNullOrEmpty(path))
                 return;
 
-            var targetPath = MsBuild.GetTargetPath(path);
-            var targetFolder = Path.GetDirectoryName(targetPath);
+            // retrieve current project configuration (Debug|Release) and platform (x86|x64|AnyCPU)
+
+            var configuration = project.ConfigurationManager.ActiveConfiguration;
+
+            // retrieve current project target path, based upon the currently selected configuration
+
+            var configurationName = configuration.ConfigurationName;
+            var platformName = configuration.PlatformName;
+
+            var targetFolder = GetTargetFolder(path, configurationName, platformName);
+
+            // remove space from Visual Studio's "Any CPU" platform
+            // so as to be mapped to MSBuild's "AnyCPU" platform.
+
+            if (targetFolder.Length == 0 && platformName == "Any CPU")
+                targetFolder = GetTargetFolder(path, configurationName, "AnyCPU");
 
             // run PowerShell prompt at the target location
 
@@ -113,6 +129,13 @@ namespace OpenPromptHere.Commands
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = false;
             process.Start();
+        }
+
+        private static string GetTargetFolder(string path, string configurationName, string platformName)
+        {
+            var targetPath = MsBuild.GetTargetPath(path, configurationName, platformName);
+            var targetFolder = Path.GetDirectoryName(targetPath);
+            return targetFolder;
         }
     }
 }

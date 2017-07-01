@@ -6,16 +6,20 @@ namespace OpenPromptHere.Utils
 {
     public static class MsBuild
     {
-        public static string GetTargetPath(string csproj)
+        public static string GetTargetPath(string csproj, string configuration, string platform)
         {
             const string propertyName = "TargetPath";
-            return GetProperty(csproj, propertyName);
+
+            var properties = new Dictionary<string, string> {
+                { "Configuration", configuration},
+                { "Platform", platform}
+            };
+
+            return GetProperty(csproj, propertyName, properties);
         }
 
-        public static string GetProperty(string csproj, string propertyName)
+        public static string GetProperty(string csproj, string propertyName, IDictionary<string, string> properties)
         {
-            var properties = new Dictionary<string, string>();
-
             // load MSBuild project and evaluate its TargetPath
             // based upon the selected configuration
 
