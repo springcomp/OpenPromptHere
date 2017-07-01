@@ -1,6 +1,8 @@
 # Roadmap
 
-- [ ] Support Debug|Release configurations.
+- [x] Support Debug|Release configurations.
+- [ ] Support Visual Studio 2017
+- [ ] Support .Net Core projects
 
 Features that have a checkmark are complete and available for
 download in the
@@ -17,3 +19,7 @@ on the official Visual Studio extension gallery.
 
 - [x] Initial release
 - [x] Open a PowerShell prompt to the selected Project's target folder.
+
+**2016-07-01**
+
+- [x] Support currently selected project's configuration (Debug|Release) and platform (AnyCPU, etc.)
