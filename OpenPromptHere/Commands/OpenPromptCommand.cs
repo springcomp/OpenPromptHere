@@ -1,16 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OpenPromptHere.Utils;
-using Project = EnvDTE.Project;
+using System.Text;
+using System.IO;
 
 namespace OpenPromptHere.Commands
 {
@@ -22,12 +17,12 @@ namespace OpenPromptHere.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = PackageIds.OpenPromptCommandId;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("c340ebab-4672-4655-bbfa-5282d5be37b0");
+        public static readonly Guid CommandSet = PackageGuids.guidOpenPromptCommandPackageCmdSet;
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -46,11 +41,11 @@ namespace OpenPromptHere.Commands
 
             package_ = package;
 
-            var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var commandService = ServiceProvider.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
-                var menuCommandId = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(MenuItemCallback, menuCommandId);
+                var menuCommandID = new CommandID(CommandSet, CommandId);
+                var menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
                 commandService.AddCommand(menuItem);
             }
         }
@@ -67,7 +62,7 @@ namespace OpenPromptHere.Commands
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider => this.package_;
+        private IServiceProvider ServiceProvider => package_;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -87,8 +82,6 @@ namespace OpenPromptHere.Commands
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            // retrieve currently selected project
-
             var project = SolutionExplorer.GetSelectedProject();
             var path = project?.FullName;
             if (String.IsNullOrEmpty(path))
