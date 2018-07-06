@@ -2,7 +2,8 @@
 
 - [x] Support Debug|Release configurations.
 - [x] Support Visual Studio 2017
-- [ ] Support .Net Core projects
+- [x] Support .Net Core and .Net Standard projects
+- [ ] Support multiple TargetFrameworks for .Net Core projects
 
 Features that have a checkmark are complete and available for
 download in the
@@ -27,3 +28,7 @@ on the official Visual Studio extension gallery.
 **2017-07-05**
 
 - [x] Support Visual Studio 2017.
+
+**2018-07-06**
+
+- [x] Support .Net Core projects.

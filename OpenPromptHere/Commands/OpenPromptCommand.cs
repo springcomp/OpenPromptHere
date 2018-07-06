@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using OpenPromptHere.Utils;
 using System.Text;
 using System.IO;
+using EnvDTE;
+using EnvDTE80;
 
 namespace OpenPromptHere.Commands
 {
@@ -41,7 +43,7 @@ namespace OpenPromptHere.Commands
 
             package_ = package;
 
-            var commandService = ServiceProvider.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
+            var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
@@ -96,13 +98,13 @@ namespace OpenPromptHere.Commands
             var configurationName = configuration.ConfigurationName;
             var platformName = configuration.PlatformName;
 
-            var targetFolder = GetTargetFolder(path, configurationName, platformName);
-
-            // remove space from Visual Studio's "Any CPU" platform
-            // so as to be mapped to MSBuild's "AnyCPU" platform.
-
-            if (targetFolder.Length == 0 && platformName == "Any CPU")
-                targetFolder = GetTargetFolder(path, configurationName, "AnyCPU");
+            string targetFolder;
+            if (project.IsNetFrameworkProject())
+                targetFolder = GetNetFrameworkProjectPath(path, configurationName, platformName);
+            else if (project.IsNetCoreProject())
+                targetFolder = GetNetCoreProjectPath(path, configurationName, platformName);
+            else
+                throw new NotSupportedException("Unsupported Visual Studio project type.");
 
             // run PowerShell prompt at the target location
 
@@ -124,11 +126,87 @@ namespace OpenPromptHere.Commands
             process.Start();
         }
 
+        private static string GetNetCoreProjectPath(string path, string configurationName, string platformName)
+        {
+            var targetFrameworks = MsBuild.GetTargetFrameworks(path, configurationName);
+            // WARNING: currently supporting only the "first" target framework
+
+            if (targetFrameworks == null)
+                targetFrameworks = "netcoreapp2.1";
+
+            var frameworkFragments = targetFrameworks.Split(';');
+            var targetFramework = frameworkFragments.Length > 0
+                    ? frameworkFragments[0]
+                    : targetFrameworks
+                ;
+
+            var runtimeIdentifiers = MsBuild.GetRuntimeIdentifiers(path, configurationName);
+            if (runtimeIdentifiers != null)
+            {
+                // WARNING: currently supporting only the "first" runtime identifier
+                var fragments = runtimeIdentifiers.Split(';');
+                var runtime = fragments.Length > 0
+                        ? fragments[0]
+                        : runtimeIdentifiers
+                    ;
+            }
+
+            if (platformName == "Any CPU")
+                platformName = "AnyCPU";
+
+            var outputPath = MsBuild.GetOutputPath(path, configurationName, targetFramework, platformName);
+            var directory = Path.GetDirectoryName(path);
+
+            var targetFolder = Path.Combine(
+                directory,
+                outputPath
+            );
+
+            return targetFolder;
+        }
+
+
+        private static string GetNetFrameworkProjectPath(string path, string configurationName, string platformName)
+        {
+            var targetFolder = GetTargetFolder(path, configurationName, platformName);
+
+            // remove space from Visual Studio's "Any CPU" platform
+            // so as to be mapped to MSBuild's "AnyCPU" platform.
+
+            if (targetFolder.Length == 0 && platformName == "Any CPU")
+                targetFolder = GetTargetFolder(path, configurationName, "AnyCPU");
+            return targetFolder;
+        }
+
         private static string GetTargetFolder(string path, string configurationName, string platformName)
         {
             var targetPath = MsBuild.GetTargetPath(path, configurationName, platformName);
             var targetFolder = Path.GetDirectoryName(targetPath);
             return targetFolder;
         }
+    }
+
+    internal static class EnvDteProjectExtensions
+    {
+        public static bool IsNetFrameworkProject(this Project project)
+        {
+            return IsVisualStudioProjectKind(project, ProjectKind.NetFrameworkProject);
+        }
+
+        public static bool IsNetCoreProject(this Project project)
+        {
+            return IsVisualStudioProjectKind(project, ProjectKind.NetCoreProject);
+        }
+
+        public static bool IsVisualStudioProjectKind(this Project project, string projectKind)
+        {
+            return project.Kind.ToLowerInvariant().Contains(projectKind.ToLowerInvariant());
+        }
+    }
+
+    internal static class ProjectKind
+    {
+        public const string NetFrameworkProject = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+        public const string NetCoreProject = "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}";
     }
 }
