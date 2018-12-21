@@ -168,14 +168,35 @@ namespace OpenPromptHere.Commands
 
         private static string GetNetFrameworkProjectPath(string path, string configurationName, string platformName)
         {
-            var targetFolder = GetTargetFolder(path, configurationName, platformName);
-
             // remove space from Visual Studio's "Any CPU" platform
             // so as to be mapped to MSBuild's "AnyCPU" platform.
 
-            if (targetFolder.Length == 0 && platformName == "Any CPU")
-                targetFolder = GetTargetFolder(path, configurationName, "AnyCPU");
-            return targetFolder;
+            var msbuildPlatform = platformName;
+
+            if (platformName == "Any CPU")
+                msbuildPlatform = "AnyCPU";
+
+            // get supported target frameworks
+            // currently only supporting the first target framework
+
+            var targetFrameworks = MsBuild.GetTargetFrameworks(path, configurationName);
+            if (String.IsNullOrEmpty(targetFrameworks))
+            {
+                var targetFolder = GetTargetFolder(path, configurationName, msbuildPlatform);
+                return targetFolder;
+            }
+
+            else
+            {
+                var frameworkFragments = targetFrameworks.Split(';');
+                var targetFramework = frameworkFragments.Length > 0
+                        ? frameworkFragments[0]
+                        : targetFrameworks
+                    ;
+
+                var outputPath = GetOutputFolder(path, configurationName, targetFramework, msbuildPlatform);
+                return outputPath;
+            }
         }
 
         private static string GetTargetFolder(string path, string configurationName, string platformName)
@@ -183,6 +204,15 @@ namespace OpenPromptHere.Commands
             var targetPath = MsBuild.GetTargetPath(path, configurationName, platformName);
             var targetFolder = Path.GetDirectoryName(targetPath);
             return targetFolder;
+        }
+        private static string GetOutputFolder(string path, string configurationName, string targetFramework, string platformName)
+        {
+            var folder = Path.GetDirectoryName(path);
+
+            var outputPath = MsBuild.GetOutputPath(path, configurationName, targetFramework, platformName);
+            var outputFolder = Path.Combine(folder, outputPath);
+
+            return outputFolder;
         }
     }
 

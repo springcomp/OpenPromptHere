@@ -32,3 +32,8 @@ on the official Visual Studio extension gallery.
 **2018-07-06**
 
 - [x] Support .Net Core projects.
+
+**2018-12-21**
+
+- [x] Support Visual Studio 2019 (Preview)
+- [x] Fix support of .Net Core and .Net standard projects using .csproj format.
